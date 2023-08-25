@@ -5,36 +5,32 @@ use clap::Parser;
 use std::path::PathBuf;
 use url::Url;
 use std::sync::Arc;
+use serde_json::json;
 
-#[derive(Parser, Debug)]
-#[clap(author, version, about, long_about = None)]
-struct Arguments {
-    #[clap(index = 1)]
-    storage: PathBuf,
-    #[clap(index = 2)]
-    service: Url,
-    #[clap(index = 3)]
-    username: String,
-    #[clap(index = 4)]
-    password: String,
-}
 
 #[tokio::main]
 async fn main() {
-    let args = Arguments::parse();
+    let storage = Arc::new(File::<UserSession>::new(PathBuf::from("./storage.json")));
+    let mut client = ClientBuilder::default().session(None).build().unwrap();
 
-    let storage = Arc::new(File::<UserSession>::new(args.storage));
-    let mut client= ClientBuilder::default().session(None).storage(storage).build().unwrap();
-
-    client.login(&args.service, &args.username, &args.password)
+    client.login(&Url::parse("https://bsky.social").unwrap(), &"nsf.nonbinary.computer", &"brxm-ocdx-kuao-ccih")
     .await
     .unwrap();
 
     let mut bsky = Bluesky::new(client);
-    let mut profile = bsky.user(args.username).unwrap();
-    let mut stream = profile.stream_posts().await.unwrap();
+    let mut user = bsky.user(&"nonbinary.computer").unwrap();
+    let profile = user.get_profile().await.unwrap();
+    println!("Profile: {:#?}", json!(profile).to_string());
+    /*
+    let likes = user.get_likes(100, None).await.unwrap();
+    println!("Likes: {:#?}", likes);
+    let follows = user.get_follows(100, None).await.unwrap();
+    println!("Follows: {:#?}", follows);
+    let followers = user.get_followers(100, None).await.unwrap();
+    println!("Followers: {:#?}", followers);
+    let mut stream = user.stream_posts().await.unwrap();
 
     while let Ok(record) = stream.next().await {
         println!("{:#?}", record);
-    }
+    }*/
 }

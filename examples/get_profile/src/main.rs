@@ -26,20 +26,13 @@ struct Arguments {
 async fn main() {
     let args = Arguments::parse();
 
-    let storage = Arc::new(File::<UserSession>::new(args.storage));
+    //let storage = Arc::new(File::<UserSession>::new(args.storage));
 
-    let mut client= ClientBuilder::default().session(None).storage(storage).build().unwrap();
-    client.login(&args.service, &args.username, &args.password).await;
+    let mut client= ClientBuilder::default().session(None).build().unwrap();
+    client.login(&"https://bsky.social", &"nsf.nonbinary.computer", &"brxm-ocdx-kuao-ccih").await;
     let mut bsky = Bluesky::new(client);
-    let mut user = bsky.user(&args.query).unwrap();
-    let profile = user.get_profile().await.unwrap();
-    println!("Profile: {:#?}", profile);
-    let likes = user.get_likes(100, None).await.unwrap();
-    println!("Likes: {:#?}", likes);
-    let follows = user.get_follows(100, None).await.unwrap();
-    println!("Follows: {:#?}", follows);
-    let followers = user.get_followers(100, None).await.unwrap();
-    println!("Followers: {:#?}", followers);
-
+    let mut me = bsky.me().unwrap();
+    let post = me.get_post_thread(&"https://bsky.app/profile/shreyan.bsky.social/post/3k5is5uplem2w").await.unwrap();
+    println!("Post\n{:#?}", post);
 
 }

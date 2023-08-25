@@ -1,0 +1,8 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./examples/honk_bot/Cargo.toml",
+        "./examples/honk_bot/Cargo.toml",
+        "./examples/honk_bot/Cargo.toml",
+        "./examples/honk_bot/Cargo.toml"
+    ]
+}

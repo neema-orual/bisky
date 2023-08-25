@@ -11,6 +11,15 @@ pub struct Label {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+pub struct ViewerState {
+    pub muted: bool,
+    pub blocked_by: bool,
+    pub blocking: String,
+    pub following: String,
+    pub followed_by: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ProfileViewBasic {
     pub did: String,
     pub handle: String,
@@ -31,6 +40,7 @@ pub struct ProfileView {
     pub avatar: Option<String>,
     pub labels: Vec<Label>,
     pub indexed_at: Option<String>,
+    pub viewer_state: Option<ViewerState>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -50,4 +60,5 @@ pub struct ProfileViewDetailed {
     pub posts_count: Option<usize>,
     pub labels: Vec<Label>,
     pub indexed_at: Option<String>,
+    pub viewer_state: Option<ViewerState>,
 }
